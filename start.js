@@ -1,8 +1,6 @@
 const fs = require('fs');
 loopCount = 0;
-var result;
 const { exec, execSync } = require('child_process');
-
 
 
 source = "/mnt/m2"
@@ -27,54 +25,80 @@ function getFiles(source) {
     return plotFiltered;
 }
 
-function uploadIsDone(currentFileList) {
-    newList = getFiles(source);
-    if (loopCount == 0) {
-        return true;
-    }
-    else {
-        for (var i = 0; i <= newList.length; i++) {
-            if (newList.includes(currentFileList[i])) {
-                console.log("File " + currentFileList[i] + " is still there");
-                execSync('sleep 300');
-                return false;
+function rcloneUpload(file, account) {
+    rclone = "rclone move /mnt/m2/" + file + " --transfers=8 server1: --no-traverse   --ignore-existing --min-size 101G --drive-chunk-size 1G --progress --fast-list --drive-service-account-file " + account;
+    execSync('sleep 5');
+    console.log(rclone);
+    filelimit++;
+    exec(rclone, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+    uploadInProgress.push(file);
 
-            }
-            else {
-                currentFileList.splice(i);
-                return true;
+}
+
+function uploadIsDone() {
+    var fileList = getFiles(source);
+    console.log(uploadInProgress);
+    console.log(fileList);
+    var whichFile = 0;
+
+    while (uploadInProgress.length > 0) {
+        for (var i = 0; i < 2;) {
+            fileList = getFiles(source);
+            if (fileList.includes(uploadInProgress[whichFile])) {
+                console.log("upload is not done");
+                execSync('sleep 60');
+                console.log(uploadInProgress[whichFile]);
+            } else {
+                console.log("upload is done");
+                console.log("done ", uploadInProgress[whichFile]);
+                uploadInProgress.splice(whichFile, 1);
+                i++;
+
             }
         }
     }
-
 }
+
+var lastJsonAccount = 0;
 
 
 while (true) {
-    accounts = getAccountsJson(sourceOfJson);
-    accountsCount = accounts.length;
-    console.log("Starting loop: " + loopCount);
-    uploadCheck = getFiles(source);
-    howManyFiles = uploadCheck.length;
-    console.log(uploadCheck);
-    console.log("Number of plots: " + howManyFiles);
-    willUpload = uploadCheck;
-    if (howManyFiles > 1) {
-        if (uploadIsDone(uploadInProgress)) {
-            for (var i = 0; i < willUpload.length; i++) {
-                upload = "rclone move /mnt/m2/" + uploadCheck[i] + " --transfers=12 server1: --no-traverse   --ignore-existing --min-size 101G --progress --drive-chunk-size 4G --fast-list --drive-service-account-file " + sourceOfJson + accounts[i % accountsCount];
-                uploadInProgress.push(uploadCheck[i]);
-                exec(upload);
-                execSync('sleep 5');
-                console.log(upload);
+    var filecount = getFiles(source).length;
+    if (filecount > 1) {
+        loopCount++;
 
+        console.log("Loop " + loopCount);
+        console.log(getFiles(source));
+        console.log("Number of Plots: " + getFiles(source).length);
+        filelimit = 0;
+        currentFileList = getFiles(source);
+        jsonList = getAccountsJson(sourceOfJson);
+        for (var i = 0; i < jsonList.length; i++) {
+            if (filelimit < 2) {
+                if (lastJsonAccount == jsonList.length) {
+                    lastJsonAccount = 0;
+                }
+                rcloneUpload(currentFileList[i], sourceOfJson + jsonList[lastJsonAccount]);
+                lastJsonAccount++;
             }
-            loopCount++;
-
         }
-    } else {
-        console.log("No files to upload");
+        while (uploadIsDone(uploadInProgress)) {
+            console.log("Waiting for uploads to finish");
+        }
+        console.log("Uploads finished");
+    }
+    else {
+        console.log("No Plots found");
         execSync('sleep 120');
     }
 }
-
