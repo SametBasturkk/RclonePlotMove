@@ -3,7 +3,7 @@ loopCount = 0;
 const { exec, execSync } = require('child_process');
 
 
-source = "./chia-plotter/build/final/"
+source = "/root/chia-plotter/build/final/"
 sourceOfJson = "/root/accountservers/"
 uploadInProgress = [];
 
