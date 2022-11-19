@@ -26,7 +26,7 @@ function getFiles(source) {
 }
 
 function rcloneUpload(file, account) {
-    rclone = "rclone move /mnt/m2/" + file + " --transfers=8 server1: --no-traverse   --ignore-existing --min-size 101G --drive-chunk-size 1G --progress --fast-list --drive-service-account-file " + account;
+    rclone = "rclone move /mnt/m2/" + file + " --transfers=4 server1: --no-traverse   --ignore-existing --min-size 101G --drive-chunk-size 128M --progress --fast-list --drive-service-account-file " + account;
     execSync('sleep 5');
     console.log(rclone);
     filelimit++;
