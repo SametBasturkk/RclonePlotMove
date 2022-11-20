@@ -3,7 +3,7 @@ loopCount = 0;
 const { exec, execSync } = require('child_process');
 
 
-source = "/root/chia-plotter/build/final/"
+source = "/root/chia-plotter/final/"
 sourceOfJson = "/root/accountservers/"
 uploadInProgress = [];
 
@@ -26,7 +26,7 @@ function getFiles(source) {
 }
 
 function rcloneUpload(file, account) {
-    rclone = "rclone move /mnt/m2/" + file + " --transfers=4 server1: --no-traverse   --ignore-existing --min-size 101G --drive-chunk-size 128M --progress --fast-list --drive-service-account-file " + account;
+    rclone = "rclone move " + source + file + " --transfers=4 server1: --no-traverse   --ignore-existing --min-size 101G --drive-chunk-size 128M --progress --fast-list --drive-service-account-file " + account;
     execSync('sleep 5');
     console.log(rclone);
     filelimit++;
@@ -52,7 +52,7 @@ function uploadIsDone() {
     var whichFile = 0;
 
     while (uploadInProgress.length > 0) {
-        for (var i = 0; i < 2;) {
+        for (var i = 0; i < 1;) {
             fileList = getFiles(source);
             if (fileList.includes(uploadInProgress[whichFile])) {
                 console.log("upload is not done");
@@ -74,7 +74,7 @@ var lastJsonAccount = 0;
 
 while (true) {
     var filecount = getFiles(source).length;
-    if (filecount > 1) {
+    if (filecount > 0) {
         loopCount++;
 
         console.log("Loop " + loopCount);
@@ -84,7 +84,7 @@ while (true) {
         currentFileList = getFiles(source);
         jsonList = getAccountsJson(sourceOfJson);
         for (var i = 0; i < jsonList.length; i++) {
-            if (filelimit < 2) {
+            if (filelimit < 1) {
                 if (lastJsonAccount == jsonList.length) {
                     lastJsonAccount = 0;
                 }
