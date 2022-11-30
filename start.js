@@ -99,6 +99,6 @@ while (true) {
     }
     else {
         console.log("No Plots found");
-        execSync('sleep 120');
+        execSync('sleep 60');
     }
 }
