@@ -3,8 +3,8 @@ loopCount = 0;
 const { exec, execSync } = require('child_process');
 
 
-source = "/root/chia-plotter/final/"
-sourceOfJson = "/root/accountservers/"
+source = "/home/ubuntu/final/"
+sourceOfJson = "/home/ubuntu/accountservers/"
 uploadInProgress = [];
 
 function getAccountsJson(sourceOfJson) {
@@ -26,7 +26,7 @@ function getFiles(source) {
 }
 
 function rcloneUpload(file, account) {
-    rclone = "rclone move " + source + file + " --transfers=4 server1: --no-traverse   --ignore-existing --min-size 101G --drive-chunk-size 128M --progress --fast-list --drive-service-account-file " + account;
+    rclone = "rclone move " + source + file + " --transfers=4 server1: --no-traverse   --tpslimit 5 --drive-upload-cutoff 1000T --ignore-existing --min-size 101G --drive-chunk-size 128M --progress --fast-list --drive-service-account-file " + account;
     execSync('sleep 5');
     console.log(rclone);
     filelimit++;
