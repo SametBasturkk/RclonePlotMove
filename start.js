@@ -3,7 +3,7 @@ loopCount = 0;
 const { exec, execSync } = require('child_process');
 
 
-source = "/home/ubuntu/final/"
+source = "/home/ubuntu/bladebit/build-release/final/"
 sourceOfJson = "/home/ubuntu/accountservers/"
 uploadInProgress = [];
 
