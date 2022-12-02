@@ -3,7 +3,7 @@ loopCount = 0;
 const { exec, execSync } = require('child_process');
 
 
-source = "/mnt/m2/"
+source = "/mnt/m2"
 sourceOfJson = "/root/accountservers/"
 uploadInProgress = [];
 
@@ -26,7 +26,7 @@ function getFiles(source) {
 }
 
 function rcloneUpload(file, account) {
-    rclone = "rclone move " + source + file + " --transfers=4 server1: --no-traverse --drive-chunk-size 8M  --drive-upload-cutoff 1T  --ignore-existing --min-size 101G --progress --fast-list --drive-service-account-file " + account;
+    rclone = "rclone move /mnt/m2/" + file + " --transfers=4 server1: --no-traverse   --ignore-existing --min-size 101G --drive-chunk-size 1G --progress --fast-list --drive-service-account-file " + account;
     execSync('sleep 5');
     console.log(rclone);
     filelimit++;
@@ -74,6 +74,7 @@ var lastJsonAccount = 0;
 
 while (true) {
     var filecount = getFiles(source).length;
+    console.log(filecount)
     if (filecount > 0) {
         loopCount++;
 
@@ -99,6 +100,6 @@ while (true) {
     }
     else {
         console.log("No Plots found");
-        execSync('sleep 60');
+        execSync('sleep 120');
     }
 }
