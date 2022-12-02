@@ -4,7 +4,7 @@ const { exec, execSync } = require('child_process');
 
 
 source = "/mnt/m2/"
-sourceOfJson = "/root/accountserver/"
+sourceOfJson = "/root/accountservers/"
 uploadInProgress = [];
 
 function getAccountsJson(sourceOfJson) {
