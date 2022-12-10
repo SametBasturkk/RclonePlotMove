@@ -3,7 +3,7 @@ loopCount = 0;
 const { exec, execSync } = require('child_process');
 
 
-source = "/mnt/m2"
+source = "/mnt/m2/"
 sourceOfJson = "/root/accountservers/"
 uploadInProgress = [];
 
@@ -52,7 +52,7 @@ function uploadIsDone() {
     var whichFile = 0;
 
     while (uploadInProgress.length > 0) {
-        for (var i = 0; i < 1;) {
+        for (var i = 0; i < 2;) {
             fileList = getFiles(source);
             if (fileList.includes(uploadInProgress[whichFile])) {
                 console.log("upload is not done");
@@ -75,7 +75,7 @@ var lastJsonAccount = 0;
 while (true) {
     var filecount = getFiles(source).length;
     console.log(filecount)
-    if (filecount > 0) {
+    if (filecount > 1) {
         loopCount++;
 
         console.log("Loop " + loopCount);
@@ -85,7 +85,7 @@ while (true) {
         currentFileList = getFiles(source);
         jsonList = getAccountsJson(sourceOfJson);
         for (var i = 0; i < jsonList.length; i++) {
-            if (filelimit < 1) {
+            if (filelimit < 2) {
                 if (lastJsonAccount == jsonList.length) {
                     lastJsonAccount = 0;
                 }
